@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Max's Drawings Shop</title>
+  <style>
+    :root{
+      --red: #e53935;
+      --green: #2e7d32;
+      --cream: #fff7e6;
+      --ink: #1f2937;
+      --card: #ffffff;
+      --shadow: 0 10px 25px rgba(0,0,0,0.12);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    body{
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(229,57,53,0.18), transparent 40%),
+        radial-gradient(circle at 90% 15%, rgba(46,125,50,0.18), transparent 45%),
+        radial-gradient(circle at 50% 100%, rgba(229,57,53,0.10), transparent 50%),
+        linear-gradient(180deg, var(--cream), #ffffff);
+      min-height: 100vh;
+    }
+
+    header{
+      padding: 28px 16px 8px;
+      text-align: center;
+    }
+
+    .badge{
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.75);
+      border: 2px dashed rgba(46,125,50,0.45);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      margin-bottom: 14px;
+    }
+
+    .dot{
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 18px 0 0 var(--green);
+      position: relative;
+      margin-left: 4px;
+    }
+
+    h1{
+      margin: 8px 0 6px;
+      font-size: clamp(2rem, 4vw, 3rem);
+      letter-spacing: 0.5px;
+      line-height: 1.05;
+      text-shadow: 0 2px 0 rgba(0,0,0,0.06);
+    }
+
+    .subtitle{
+      margin: 0 auto;
+      max-width: 820px;
+      font-size: 1.05rem;
+      opacity: 0.9;
+    }
+
+    .wrap{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 18px 16px 42px;
+    }
+
+    .toolbar{
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 18px 0 18px;
+    }
+
+    .pill{
+      font-size: 0.95rem;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #fff;
+      border: 2px solid rgba(229,57,53,0.25);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+      user-select: none;
+    }
+    .pill strong{ color: var(--green); }
+
+    .grid{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 640px){
+      .grid{ grid-template-columns: 1fr; }
+      .subtitle{ padding: 0 10px; }
+    }
+
+    .card{
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 3px solid rgba(46,125,50,0.18);
+      position: relative;
+      transform: translateY(0);
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+    .card:hover{
+      transform: translateY(-4px);
+      box-shadow: 0 14px 32px rgba(0,0,0,0.14);
+    }
+
+    .card::before{
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(135deg, rgba(229,57,53,0.10), transparent 35%),
+        linear-gradient(225deg, rgba(46,125,50,0.10), transparent 35%);
+    }
+
+    .card-body{
+      padding: 14px 14px 16px;
+      position: relative;
+    }
+
+    .drawing-title{
+      margin: 0 0 10px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .star{
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+      display: inline-block;
+      background: conic-gradient(from 180deg, var(--red), var(--green), var(--red));
+      clip-path: polygon(50% 0%, 62% 34%, 98% 35%, 69% 57%, 79% 91%, 50% 72%, 21% 91%, 31% 57%, 2% 35%, 38% 34%);
+      border-radius: 2px;
+      opacity: 0.95;
+    }
+
+    .img-wrap{
+      border-radius: 14px;
+      overflow: hidden;
+      border: 3px solid rgba(229,57,53,0.18);
+      background: #fff;
+    }
+
+    img{
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+    }
+
+    .meta{
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .price{
+      font-weight: 900;
+      color: var(--red);
+      font-size: 1.1rem;
+      white-space: nowrap;
+    }
+
+    .tag{
+      font-size: 0.85rem;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: rgba(46,125,50,0.10);
+      border: 1.5px solid rgba(46,125,50,0.25);
+      color: #1b5e20;
+      white-space: nowrap;
+    }
+
+    .desc{
+      margin: 10px 0 0;
+      font-size: 0.98rem;
+      line-height: 1.35;
+      opacity: 0.92;
+    }
+
+    footer{
+      text-align: center;
+      padding: 12px 16px 28px;
+      opacity: 0.85;
+      font-size: 0.95rem;
+    }
+
+    a { color: var(--green); }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="badge">
+      <span class="dot" aria-hidden="true"></span>
+      <span><strong style="color: var(--green);">Handmade</strong> art by Max!</span>
+    </div>
+    <h1>Max's Drawings Shop</h1>
+    <p class="subtitle">
+      Pick your favourite drawing! (Grown-ups can help with buying.)  
+      All of these drawings come from the imagination of Max Rutter. Thank you for supporting your local artist.
+    </p>
+    <br />
+  </header>
+
+  <main class="wrap">
+
+
+    <section class="grid" aria-label="drawings for sale">
+      <!-- CARD 1 -->
+      <article class="card">
+        <div class="card-body">
+          <h2 class="drawing-title"><span class="star"></span> Master Sword & Hylian Shield</h2>
+          <div class="img-wrap">
+            <img src="images/drawing1.jpg" alt="Rainbow Dragon drawing by Max">
+          </div>
+          <div class="meta">
+            <div class="price">£10</div>
+            <div class="tag">One of a kind</div>
+          </div>
+          <p class="desc">A legendary sword and a passed-down shield.</p>
+        </div>
+      </article>
+
+      <!-- CARD 2 -->
+      <article class="card">
+        <div class="card-body">
+          <h2 class="drawing-title"><span class="star"></span> Ocarina Of Time Link</h2>
+          <div class="img-wrap">
+            <img src="images/drawing2.jpg" alt="Space Rocket drawing by Max">
+          </div>
+          <div class="meta">
+            <div class="price">85p</div>
+            <div class="tag">Moody Bugger</div>
+          </div>
+          <p class="desc">A time-travelling hero with a green suit.</p>
+        </div>
+      </article>
+
+      <!-- CARD 3 -->
+      <article class="card">
+        <div class="card-body">
+          <h2 class="drawing-title"><span class="star"></span> Echoes of Wisdom Link</h2>
+          <div class="img-wrap">
+            <img src="images/drawing3.jpg" alt="Funny Cat drawing by Max">
+          </div>
+          <div class="meta">
+            <div class="price">£5</div>
+            <div class="tag">Super Shiny</div>
+          </div>
+          <p class="desc">A link with a special sword and a weirdly shiny body.</p>
+        </div>
+      </article>
+
+      <!-- CARD 4 -->
+      <article class="card">
+        <div class="card-body">
+          <h2 class="drawing-title"><span class="star"></span> Gojo Satoro</h2>
+          <div class="img-wrap">
+            <img src="images/drawing4.jpg" alt="Monster Party drawing by Max">
+          </div>
+          <div class="meta">
+            <div class="price">£19</div>
+            <div class="tag">Anime Inspired</div>
+          </div>
+          <p class="desc">A super powerful kid who will soon rule the world (and he does in anime).</p>
+        </div>
+      </article>
+
+      <!-- CARD 5 -->
+      <article class="card">
+        <div class="card-body">
+          <h2 class="drawing-title"><span class="star"></span> Pikachu</h2>
+          <div class="img-wrap">
+            <img src="images/drawing5.jpg" alt="Jungle Adventure drawing by Max">
+          </div>
+          <div class="meta">
+            <div class="price">£5</div>
+            <div class="tag">Chilling Out</div>
+          </div>
+          <p class="desc">Pickachu just chilling, nuff said.</p>
+        </div>
+      </article>
+
+      <!-- CARD 6 -->
+      <article class="card">
+        <div class="card-body">
+          <h2 class="drawing-title"><span class="star"></span> BOTW Link</h2>
+          <div class="img-wrap">
+            <img src="images/drawing6.jpg" alt="Underwater Friends drawing by Max">
+          </div>
+          <div class="meta">
+            <div class="price">£4</div>
+            <div class="tag">BOTW</div>
+          </div>
+          <p class="desc">Link with a cool suit from one of the best games of all time.</p>
+        </div>
+      </article>
+
+      <!-- CARD 7 -->
+      <article class="card">
+        <div class="card-body">
+          <h2 class="drawing-title"><span class="star"></span> Goku from Dragonball Z</h2>
+          <div class="img-wrap">
+            <img src="images/drawing7.jpg" alt="Superhero drawing by Max">
+          </div>
+          <div class="meta">
+            <div class="price">£15</div>
+            <div class="tag">Don't mess</div>
+          </div>
+          <p class="desc">An extremely powerful anime character.  May go super saiyan.</p>
+        </div>
+      </article>
+
+      <!-- CARD 8 -->
+      <article class="card">
+        <div class="card-body">
+          <h2 class="drawing-title"><span class="star"></span> Gojo Satoro Older</h2>
+          <div class="img-wrap">
+            <img src="images/drawing8.jpg" alt="Dinosaur drawing by Max">
+          </div>
+          <div class="meta">
+            <div class="price">£10</div>
+            <div class="tag">All Grown Up</div>
+          </div>
+          <p class="desc">A character who always wants power, whatever the cost.</p>
+        </div>
+      </article>
+
+      <!-- CARD 9 -->
+      <article class="card">
+        <div class="card-body">
+          <h2 class="drawing-title"><span class="star"></span> 6/7</h2>
+          <div class="img-wrap">
+            <img src="images/drawing9.jpg" alt="Winter Cabin drawing by Max">
+          </div>
+          <div class="meta">
+            <div class="price">£20</div>
+            <div class="tag">Six Sevennn!</div>
+          </div>
+          <p class="desc">A something from steel a brainrot that literally somehow went viral.</p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    Made with ❤️ by Max and family. <br/>
+    (To change pictures: put files in <strong>images/</strong> and update the <code>src</code> paths.)
+  </footer>
+</body>
+</html>
